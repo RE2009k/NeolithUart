@@ -1,0 +1,116 @@
+/**************************************************
+**
+** Copyright (C) 2012 Denis Shienkov
+**
+**************************************************/
+
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QtCore/QtGlobal>
+#include <QMainWindow>
+#include <QtSerialPort/QSerialPort>
+#include <QTimer>
+#include <qDebug>
+#include <QString>
+#include <QTextCodec>
+#include <QIntValidator>
+
+
+QT_BEGIN_NAMESPACE
+
+namespace Ui {
+class MainWindow;
+}
+
+QT_END_NAMESPACE
+
+//class Console;
+class SettingsDialog;
+
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+
+private slots:
+    void openSerialPort();
+    void closeSerialPort();
+    void about();
+    void writeData(const QByteArray &data);
+    void readData();
+    void handleError(QSerialPort::SerialPortError error);
+    void clearReceiveDisplay();
+    void receiveDatHandle();   //处理接收的uart缓存数据
+
+    void on_pusBut_sendDat1_clicked();
+
+    void on_pusBut_sendDat2_clicked();
+
+    void on_pusBut_sendDat3_clicked();
+
+    void on_pusBut_sendDat4_clicked();
+
+    void on_pusBut_pauseDisplay_clicked();
+
+    void on_cheBox_autosend1_clicked(bool checked);
+
+    void on_cheBox_autosend2_clicked(bool checked);
+
+    void on_cheBox_autosend3_clicked(bool checked);
+
+    void on_checBox_autosend4_clicked(bool checked);
+
+    void on_pusBut_startAutoSend_clicked();
+
+private:
+    void initActionsConnections();
+
+    void sendRegion1Dat();  //发送“发送数据区1”的数据
+    void sendRegion2Dat();  //发送“发送数据区2”的数据
+    void sendRegion3Dat();  //发送“发送数据区3”的数据
+    void sendRegion4Dat();  //发送“发送数据区4”的数据
+
+
+private slots:
+    void startRegion1AutoSend();  //启动发送区1 自动发
+    void startRegion2AutoSend();  //启动发送区2 自动发
+    void startRegion3AutoSend();  //启动发送区3 自动发
+    void startRegion4AutoSend();  //启动发送区4 自动发
+
+
+    void on_pusBut_clr1_clicked();
+
+    void on_pusBut_clr2_clicked();
+
+    void on_pusBut_clr3_clicked();
+
+    void on_pusBut_clr4_clicked();
+
+private:
+    Ui::MainWindow *ui;
+    //Console *console;
+    SettingsDialog *settings;
+    QSerialPort *serial;
+    QByteArray *receiveDat;     //从串口上接收的数据
+    QTimer *receiveHandleTimer; //延时处理接收缓存中的串口数据
+    quint32 recDisLineNum;  //从串口上接收并显示在屏幕上的数据的行数
+    bool pauseRevDis;
+    QIntValidator* sendIntervalValidator;
+
+    //四个发送数据区的Auto-Send使能
+    bool autoSendEnFlg1;
+    bool autoSendEnFlg2;
+    bool autoSendEnFlg3;
+    bool autoSendEnFlg4;
+
+    bool AutoSendRunEnFlg;  //启动自动轮发使能
+
+
+};
+
+#endif // MAINWINDOW_H

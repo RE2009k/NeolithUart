@@ -1,0 +1,70 @@
+/**************************************************
+**
+** Copyright (C) 2012 Denis Shienkov
+**
+**************************************************/
+
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QtCore/QtGlobal>
+#include <QMainWindow>
+#include <QtSerialPort/QSerialPort>
+#include <QTimer>
+#include <qDebug>
+#include <QString>
+#include <QTextCodec>
+
+
+
+QT_BEGIN_NAMESPACE
+
+namespace Ui {
+class MainWindow;
+}
+
+QT_END_NAMESPACE
+
+//class Console;
+class SettingsDialog;
+
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+
+private slots:
+    void openSerialPort();
+    void closeSerialPort();
+    void about();
+    void writeData(const QByteArray &data);
+    void readData();
+    void handleError(QSerialPort::SerialPortError error);
+    void clearReceive();
+    void receiveDatHandle();   //处理接收的uart缓存数据
+
+
+    void on_pusBut_sendDat1_clicked();
+
+
+
+private:
+    void initActionsConnections();
+
+
+private:
+    Ui::MainWindow *ui;
+    //Console *console;
+    SettingsDialog *settings;
+    QSerialPort *serial;
+    QByteArray *receiveDat;     //从串口上接收的数据
+    QTimer *receiveHandleTimer; //延时处理接收缓存中的串口数据
+
+
+};
+
+#endif // MAINWINDOW_H
